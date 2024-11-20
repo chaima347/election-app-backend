@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const verifyToken = require('../middlewares/authMiddleware');
+const { updateUser } = require('../controllers/userController');
+
+// Define routes
+router.get('/update/:id', verifyToken, updateUser); 
+
+
+module.exports = router;
