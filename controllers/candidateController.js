@@ -46,3 +46,46 @@ exports.commentCandidate = async (req, res) => {
     }
 };
 
+
+//favorize a candidate 
+
+exports.favorizeCandidate = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const candidate = await Candidate.findById(id);
+
+        if (!candidate) {
+            return res.status(404).json({ message: 'Candidat non trouvé' });
+        }
+
+        candidate.favorites += 1;
+        await candidate.save();
+
+        res.status(200).json({ message: 'Candidat favorisé', candidate });
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la mise à jour du candidat', error: err.message });
+    }
+};
+
+
+
+//search
+exports.searchCandidates = async (req, res) => {
+    try {
+        const { query } = req.query;
+        const searchFilter = {
+            $or: [
+                { name: { $regex: query, $options: 'i' } },
+                { party: { $regex: query, $options: 'i' } }
+            ]
+        };
+        const candidates = await Candidate.find(searchFilter);
+        if (candidates.length === 0) {
+            return res.status(404).json({ message: 'No candidates found' });
+        }
+        res.status(200).json(candidates);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
