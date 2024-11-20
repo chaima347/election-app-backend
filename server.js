@@ -1,13 +1,26 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const http = require('http'); // Import the http module
+const { Server } = require('socket.io');
+
 dotenv.config();
+
+const app = express();
+const server = http.createServer(app); // Create the server after importing http
+const socketServer = new Server(server);
 
 const authRoutes = require('./routes/authRoutes');
 const candidateRoutes = require('./routes/candidateRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-const app = express();
+socketServer.on('connection', (socket) => {
+    console.log('A user connected');
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -19,4 +32,4 @@ app.use('/api/candidates', candidateRoutes);
 app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
