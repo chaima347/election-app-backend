@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 exports.getAllUsers = async (req, res) => {
     try {
-      const users = await User.find(); 
+      const users = await user.find(); 
       res.status(200).json(users); // Send the list of users as a JSON response
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving users', error: err.message }); // Handle errors
