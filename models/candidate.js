@@ -5,6 +5,7 @@ const candidateSchema = new mongoose.Schema({
   biography: { type: String, required: true },
   electoralProgram: { type: String, required: true },
   votes: { type: Number, default: 0 },
+  img : { type: String, required: false },
   comments: [
     {
       user: { type: String, required: true },
